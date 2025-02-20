@@ -7,6 +7,7 @@ import {
   Command,
   Frame,
   GalleryVerticalEnd,
+  HomeIcon,
   Map,
   PieChart,
   Settings2,
@@ -23,6 +24,8 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
@@ -53,33 +56,29 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
+      title: "Tickets",
+      url: "/dashboard",
       icon: SquareTerminal,
-      isActive: true,
+      isActive: false,
       items: [
         {
-          title: "Home",
-          url: "/dashboard",
+          title: "Tickets",
+          url: "/ticket/all",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Meus Tickets",
+          url: "/ticket/my",
         },
       ],
     },
     {
-      title: "Models",
+      title: "Cadastros",
       url: "#",
       icon: Bot,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Usuarios",
+          url: "/user",
         },
         {
           title: "Explorer",
@@ -159,13 +158,30 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <SidebarMenuItem key="Dashboard" className="px-2 list-none">
+          <SidebarMenuButton
+            asChild
+            className={
+              pathname === "/"
+                ? "bg-blue-500 text-white hover:bg-blue-500 hover:text-white" // Cor de fundo e texto para o item ativo
+                : "hover:bg-blue-500 hover:text-white"
+            }
+          >
+            <a href="/">
+              <HomeIcon />
+              <span> Dashboard</span>
+            </a>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+
+        <NavMain items={data.navMain} pathname={pathname} />
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
