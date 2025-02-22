@@ -36,10 +36,10 @@ export function NavMain({
       <SidebarGroupLabel>Ticket</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
-          // Verifica se algum subitem tem a mesma URL do pathname
-          const isParentActive = item.items?.some(
-            (subItem) => subItem.url === pathname
-          );
+          // Verifica se o pathname corresponde ao item pai ou a qualquer subitem
+          const isParentActive =
+            pathname.startsWith(item.url) || // O menu pai continua ativo se qualquer subitem for acessado
+            item.items?.some((subItem) => pathname.startsWith(subItem.url));
 
           return (
             <Collapsible
@@ -58,22 +58,26 @@ export function NavMain({
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <SidebarMenuSub>
-                    {item.items?.map((subItem) => (
-                      <SidebarMenuSubItem key={subItem.title}>
-                        <SidebarMenuSubButton
-                          asChild
-                          className={
-                            pathname === subItem.url
-                              ? "bg-blue-500 text-white hover:bg-blue-500 hover:text-white" // Cor de fundo e texto para o item ativo
-                              : "hover:bg-blue-500 hover:text-white"
-                          }
-                        >
-                          <a href={subItem.url}>
-                            <span>{subItem.title}</span>
-                          </a>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
+                    {item.items?.map((subItem) => {
+                      const isActive = pathname.startsWith(subItem.url);
+
+                      return (
+                        <SidebarMenuSubItem key={subItem.title}>
+                          <SidebarMenuSubButton
+                            asChild
+                            className={
+                              isActive
+                                ? "bg-blue-500 text-white hover:bg-blue-500 hover:text-white"
+                                : "hover:bg-blue-500 hover:text-white"
+                            }
+                          >
+                            <a href={subItem.url}>
+                              <span>{subItem.title}</span>
+                            </a>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      );
+                    })}
                   </SidebarMenuSub>
                 </CollapsibleContent>
               </SidebarMenuItem>
