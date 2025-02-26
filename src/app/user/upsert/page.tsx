@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -34,15 +33,17 @@ import { z } from "zod";
 
 export default function Users() {
   const formSchema = z.object({
-    username: z.string().min(2, {
+    name: z.string().min(2, {
       message: "Nome precisa no mínimo 2 caracteres.",
     }),
+    email: z.string().email("Email é obrigatorio"),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      name: "",
+      email: "",
     },
   });
 
@@ -50,7 +51,7 @@ export default function Users() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
-    values.username = "";
+    values.name = "";
   }
 
   return (
@@ -101,21 +102,39 @@ export default function Users() {
                       </Button>
                     </Link>
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-4 sm:grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
                     {/* Aqui poderia exibir a lista de usuários */}
 
                     <FormField
                       control={form.control}
-                      name="username"
+                      name="name"
+                      render={({ field }) => {
+                        return (
+                          <FormItem>
+                            <FormLabel>Nome</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Nome" {...field} />
+                            </FormControl>
+                            {/* <FormDescription>
+                              This is your public display name.
+                            </FormDescription> */}
+                            <FormMessage />
+                          </FormItem>
+                        );
+                      }}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Username</FormLabel>
+                          <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input placeholder="shadcn" {...field} />
+                            <Input placeholder="Email" {...field} />
                           </FormControl>
-                          <FormDescription>
+                          {/* <FormDescription>
                             This is your public display name.
-                          </FormDescription>
+                          </FormDescription> */}
                           <FormMessage />
                         </FormItem>
                       )}
