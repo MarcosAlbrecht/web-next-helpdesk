@@ -28,15 +28,24 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft, SaveIcon, XIcon } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { submitUserForm } from "../_actions/api";
 
 export default function Users() {
+  const [saving, setSaving] = useState(false);
   const formSchema = z.object({
     name: z.string().min(2, {
       message: "Nome precisa no mínimo 2 caracteres.",
     }),
     email: z.string().email("Email é obrigatorio"),
+    password: z.string().min(2, {
+      message: "Senha precisa no mínimo 2 caracteres.",
+    }),
+    admin: z.number(),
+    assistant: z.number(),
+    canSeeReports: z.number(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -44,14 +53,30 @@ export default function Users() {
     defaultValues: {
       name: "",
       email: "",
+      password: "",
+      admin: 0,
+      assistant: 0,
+      canSeeReports: 0,
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
-    values.name = "";
+    setSaving(true);
+    try {
+      const result = await submitUserForm(values);
+      console.log(values);
+      values.name = "";
+      values.email = "";
+      values.password = "";
+      values.admin = 0;
+      values.assistant = 0;
+      values.canSeeReports = 0;
+    } catch (error) {
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -79,7 +104,7 @@ export default function Users() {
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
             <div className="p-4">
-              <h1 className="text-2xl font-bold mb-4">Cadastrar de Usuários</h1>
+              <h1 className="text-2xl font-bold mb-4">Cadastro de Usuários</h1>
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
@@ -131,6 +156,22 @@ export default function Users() {
                           <FormLabel>Email</FormLabel>
                           <FormControl>
                             <Input placeholder="Email" {...field} />
+                          </FormControl>
+                          {/* <FormDescription>
+                            This is your public display name.
+                          </FormDescription> */}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Senha" {...field} />
                           </FormControl>
                           {/* <FormDescription>
                             This is your public display name.
