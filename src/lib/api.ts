@@ -1,7 +1,3 @@
-import axios from "axios";
-const BASE_URL = "http://localhost:8000";
+import { getAPIClient } from "./axios";
 
-export const api = axios.create({
-  baseURL: BASE_URL,
-  withCredentials: true, // permite enviar cookies com requisições
-});
+export const api = getAPIClient();

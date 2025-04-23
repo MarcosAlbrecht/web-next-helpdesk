@@ -2,7 +2,6 @@
 
 import {
   AudioWaveform,
-  BookOpen,
   Bot,
   Command,
   Frame,
@@ -10,7 +9,6 @@ import {
   HomeIcon,
   Map,
   PieChart,
-  Settings2,
   SquareTerminal,
 } from "lucide-react";
 import * as React from "react";
@@ -80,60 +78,6 @@ const data = {
           title: "Usuarios",
           url: "/user",
         },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
       ],
     },
   ],
@@ -169,7 +113,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuButton
             asChild
             className={
-              pathname === "/"
+              pathname === "/dashboard"
                 ? "bg-blue-500 text-white hover:bg-blue-500 hover:text-white" // Cor de fundo e texto para o item ativo
                 : "hover:bg-blue-500 hover:text-white"
             }

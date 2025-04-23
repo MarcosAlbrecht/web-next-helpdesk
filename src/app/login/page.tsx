@@ -1,14 +1,17 @@
 "use client";
 import { LoginForm } from "@/components/login-form";
+import { AuthContext } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation"; // Import corrigido
+import { useContext } from "react";
 
 export default function LoginPage() {
   const router = useRouter(); // Instância correta do router
+  const { signIn } = useContext(AuthContext);
 
   const onSubmit = async (email: string, password: string) => {
     try {
       console.log(`entrou no submit`, email);
-      router.push("/dashboard");
+      await signIn({ email, password });
     } catch (error) {
       console.error(error);
     }

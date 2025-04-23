@@ -1,34 +1,67 @@
-// src/context/AuthContext.tsx
 "use client";
-import { User } from "@/types/user";
-import { createContext, useContext, useState } from "react";
+import { useRouter } from "next/navigation";
 
-type AuthContextType = {
-  user: User | null;
-  setUser: (user: User | null) => void;
-  isAuthenticating: boolean; // Novo estado
+import { parseCookies, setCookie } from "nookies";
+import { createContext, useEffect, useState } from "react";
+
+import { api } from "@/lib/api";
+import { recoverUserInformation, signInRequest } from "@/lib/auth/auth";
+import { User } from "@/lib/auth/types/user";
+
+type SignInData = {
+  email: string;
+  password: string;
 };
 
-export const AuthContext = createContext<AuthContextType>({
-  user: null,
-  setUser: () => {},
-  isAuthenticating: false,
-});
+type AuthContextType = {
+  isAuthenticated: boolean;
+  user: User | null;
+  signIn: (data: SignInData) => Promise<void>;
+};
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export const AuthContext = createContext({} as AuthContextType);
+
+import { ReactNode } from "react";
+
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticating, setIsAuthenticating] = useState(true); // Inicia como true
+  const router = useRouter();
 
-  const value = {
-    user,
-    setUser,
-    isAuthenticating,
-  };
+  const isAuthenticated = !!user;
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
+  useEffect(() => {
+    const { "nextauth.token": token } = parseCookies();
 
-// Hook customizado para acesso fácil
-export function useAuth() {
-  return useContext(AuthContext);
+    if (token) {
+      recoverUserInformation().then((response) => {
+        setUser(response.user);
+      });
+    } else {
+      router.push("/login");
+    }
+  }, []);
+
+  async function signIn({ email, password }: SignInData) {
+    const { token, user } = await signInRequest({
+      email,
+      password,
+    });
+
+    setCookie(undefined, "nextauth.token", token, {
+      maxAge: 60 * 60 * 1, // 1 hour
+      path: "/",
+    });
+
+    api.defaults.headers["Authorization"] = `Bearer ${token}`;
+
+    setUser(user);
+
+    router.push("/dashboard");
+  }
+
+  return (
+    <AuthContext.Provider value={{ user, isAuthenticated, signIn }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
