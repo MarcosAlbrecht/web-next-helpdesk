@@ -26,7 +26,10 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { AuthContext } from "@/contexts/AuthContext";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useContext } from "react";
 
 // This is sample data.
 const data = {
@@ -102,6 +105,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
+  const { user } = useContext(AuthContext);
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -113,15 +117,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuButton
             asChild
             className={
-              pathname === "/dashboard"
+              pathname === "/"
                 ? "bg-blue-500 text-white hover:bg-blue-500 hover:text-white" // Cor de fundo e texto para o item ativo
-                : "hover:bg-blue-500 hover:text-white"
+                : "hover:bg-blue-100 hover:text-black-100" // Cor de fundo e texto para o item inativo
             }
           >
-            <a href="/">
+            <Link href="/dashboard">
               <HomeIcon />
               <span> Dashboard</span>
-            </a>
+            </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
 
@@ -129,7 +133,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user!} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

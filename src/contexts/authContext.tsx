@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const { "nextauth.token": token } = parseCookies();
-
+    console.log("EFFECT: ", token);
     if (token) {
       recoverUserInformation().then((response) => {
         setUser(response.user);

@@ -31,16 +31,13 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ReactQueryProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <AuthProvider>{children}</AuthProvider>
-          </ThemeProvider>
-        </ReactQueryProvider>
+        <AuthProvider>
+          <ReactQueryProvider>
+            <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+              {children}
+            </ThemeProvider>
+          </ReactQueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );

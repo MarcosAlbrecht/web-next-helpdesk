@@ -1,4 +1,5 @@
 import { ChevronRight, LucideIcon } from "lucide-react";
+import Link from "next/link";
 import {
   Collapsible,
   CollapsibleContent,
@@ -68,12 +69,12 @@ export function NavMain({
                             className={
                               isActive
                                 ? "bg-blue-500 text-white hover:bg-blue-500 hover:text-white"
-                                : "hover:bg-blue-500 hover:text-white"
+                                : "hover:bg-blue-100 hover:text-black-100"
                             }
                           >
-                            <a href={subItem.url}>
+                            <Link href={subItem.url}>
                               <span>{subItem.title}</span>
-                            </a>
+                            </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       );
