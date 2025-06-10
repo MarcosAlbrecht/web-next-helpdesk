@@ -10,7 +10,6 @@ export default function LoginPage() {
 
   const onSubmit = async (email: string, password: string) => {
     try {
-      console.log(`entrou no submit`, email);
       await signIn({ email, password });
     } catch (error) {
       console.error(error);
