@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { api } from "../api";
 import { Auth } from "./types/auth";
 
@@ -23,16 +24,20 @@ export async function signInRequest(data: SignInRequestData): Promise<Auth> {
         avatar_url: user.avatar_url ?? "https://github.com/MarcosAlbrecht.png",
       },
     };
-  } catch (error: any) {
-    if (error.response) {
-      // erro da API (ex: 401, 400, etc)
-      console.error("Erro na requisição:", error.response.data);
-      throw new Error(error.response.data?.message || "Erro ao fazer login");
-    } else if (error.request) {
-      // sem resposta da API
-      throw new Error("Sem resposta do servidor");
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status == 404) {
+        // erro da API (ex: 401, 400, etc)
+        //console.error("Erro na requisição:", error);
+        throw new Error(error.response.data?.message || "Erro ao fazer login");
+      } else if (error.request) {
+        // sem resposta da API
+        throw new Error("Sem resposta do servidor");
+      } else {
+        // outro tipo de erro
+        throw new Error("Erro desconhecido ao fazer login");
+      }
     } else {
-      // outro tipo de erro
       throw new Error("Erro desconhecido ao fazer login");
     }
   }

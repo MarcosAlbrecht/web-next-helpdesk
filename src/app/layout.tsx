@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@/components/theme-provider";
 
+import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ReactQueryProvider } from "@/providers/react-query-provider";
 import type { Metadata } from "next";
@@ -35,6 +36,7 @@ export default async function RootLayout({
           <ReactQueryProvider>
             <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
               {children}
+              <Toaster />
             </ThemeProvider>
           </ReactQueryProvider>
         </AuthProvider>

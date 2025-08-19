@@ -42,21 +42,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   async function signIn({ email, password }: SignInData) {
-    const { token, user } = await signInRequest({
-      email,
-      password,
-    });
+    try {
+      const { token, user } = await signInRequest({
+        email,
+        password,
+      });
 
-    setCookie(undefined, "nextauth.token", token, {
-      maxAge: 60 * 60 * 1, // 1 hour
-      path: "/",
-    });
+      setCookie(undefined, "nextauth.token", token, {
+        maxAge: 60 * 60 * 1, // 1 hour
+        path: "/",
+      });
 
-    api.defaults.headers["Authorization"] = `Bearer ${token}`;
+      api.defaults.headers["Authorization"] = `Bearer ${token}`;
 
-    setUser(user);
+      setUser(user);
 
-    router.push("/dashboard");
+      router.push("/dashboard");
+    } catch (error: any) {
+      throw new Error(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Erro ao fazer login"
+      );
+    }
   }
 
   return (

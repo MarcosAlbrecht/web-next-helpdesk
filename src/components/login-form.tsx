@@ -3,13 +3,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { Loader2Icon } from "lucide-react";
 import { useState } from "react";
 type LoginFormProps = {
   onSubmit: (email: string, password: string) => void;
   className?: string; // Caso queira permitir o uso de `className` também
+  loading: boolean;
 };
 
-export function LoginForm({ className, onSubmit, ...props }: LoginFormProps) {
+export function LoginForm({
+  className,
+  onSubmit,
+  loading = false,
+  ...props
+}: LoginFormProps) {
   const [email, setEmail] = useState("teste@gmail.com");
   const [password, setPassword] = useState("1234");
 
@@ -64,8 +71,8 @@ export function LoginForm({ className, onSubmit, ...props }: LoginFormProps) {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full">
-                Login
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? <Loader2Icon className="animate-spin" /> : "Login"}
               </Button>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-background px-2 text-muted-foreground">
